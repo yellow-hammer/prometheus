@@ -1,0 +1,21 @@
+# Cursor
+.cursor/plans/
+.cursor/projects/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# OneScript / opm (если в репо появятся тестовые проекты)
+oscript_modules/
+*.ospx
+built/
+out/
+
+# Логи и временные файлы
+*.log
+*~
+
