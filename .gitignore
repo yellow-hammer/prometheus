@@ -2,6 +2,11 @@
 .cursor/plans/
 .cursor/projects/
 
+# IDE
+.idea/
+.vscode/settings.json
+*.code-workspace
+
 # OS / editor
 .DS_Store
 Thumbs.db
@@ -18,4 +23,3 @@ out/
 # Логи и временные файлы
 *.log
 *~
-
