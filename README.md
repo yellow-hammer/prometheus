@@ -6,8 +6,8 @@
 
 Библиотека сбора метрик Prometheus для OneScript: реестр коллекторов, типы метрик (Counter, Gauge, Histogram,
 Summary), Vec-варианты с лейблами и сериализация в [Prometheus Text Format](https://prometheus.io/docs/instrumenting/exposition_formats/).
-**Без HTTP** — только логика накопления и сбора метрик. HTTP-сервис отдачи метрик (например, эндпоинт `/metrics`)
-планируется отдельно (с помощью [Autumn и Winow](https://autumn-library.github.io/)).
+**Без HTTP** — только логика накопления и сбора метрик. HTTP-сервис отдачи метрик (GET `/metrics`) реализован в
+[prometheus-metrics](https://github.com/yellow-hammer/prometheus-metrics) (Autumn, Winow).
 
 ## Примеры использования
 
