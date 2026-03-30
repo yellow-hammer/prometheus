@@ -10,8 +10,9 @@ alwaysApply: true
 - **Совместимость со спецификацией Prometheus**: имена типов (`counter`, `gauge`, `histogram`, `summary`), лейблы
   (`le`, `quantile`), текст-формат и Content-Type должны совпадать со спецификацией; контракт вывода не менять без
   обоснования.
-- **Тесты**: после изменений в коде запускать `opm test`; не ломать существующие тесты; новые возможности при
-  необходимости покрывать тестами в `tests/`.
+- **Тесты**: после изменений запускать `opm run test`; новые возможности при необходимости покрывать в `tests/`.
+- **CollectorRegistry**: в `Gather()` поддерживаются структуры метрик (поле `Тип`) и объекты с `Collect()`; не вызывать
+  `Collect()` у структур из `PrometheusMetrics` / `PrometheusVec`.
 - **Публичный API**: не менять сигнатуры и имена экспортных процедур/функций фасада и модулей без необходимости
   (обратная совместимость).
 - **Markdown**: лимит длины строки 120 символов (`.markdownlint.json`, MD013); для таблиц проверка отключена
@@ -75,3 +76,19 @@ alwaysApply: true
   сериализация. Подробнее — правило **prometheus-api-usage**.
 - В новых примерах и пользовательской документации показывать сначала простой путь через фасад; низкоуровневые
   модули (PrometheusMetrics, PrometheusVec, PrometheusRegistry) — только для продвинутых сценариев.
+
+## Соответствие расширению prometheus-e1c
+
+Репозиторий [prometheus-e1c](https://github.com/yellow-hammer/prometheus-e1c) повторяет ядро библиотеки под 1С. При
+правках логики ядра учитывать зеркало.
+
+| prometheus (OneScript)      | prometheus-e1c (общий модуль)                                         |
+|-----------------------------|-----------------------------------------------------------------------|
+| `Prometheus.os`             | `PrometheusFacade` (те же имена и порядок экспортов)                  |
+| `PrometheusMetrics.os`      | `PrometheusMetrics`                                                   |
+| `PrometheusVec.os`          | `PrometheusVec`                                                       |
+| `PrometheusRegistry.os`     | `PrometheusRegistry`                                                  |
+| `PrometheusTextFormat.os`   | `PrometheusTextFormat`                                                |
+| `CollectorRegistry` (класс) | `PrometheusCollectorRegistry` (реестр-структура, `Register`/`Gather`) |
+
+Только в 1С: `PrometheusRegistryStorage` (персистентность), HTTP-сервис `/metrics`. Их нет в OneScript.

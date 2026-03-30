@@ -5,6 +5,18 @@
 Формат основан на [Keep a Changelog](https://keepachangelog.com/ru/1.0.0/),
 и этот проект придерживается [Semantic Versioning](https://semver.org/lang/ru/).
 
+## [Unreleased]
+
+### Исправлено
+
+- `CollectorRegistry.Gather`: сбор структур метрик (поле `Тип`) через `PrometheusMetrics` / `PrometheusVec`; объекты с
+  `Collect()` без изменений.
+
+### Изменено
+
+- Реестр по умолчанию больше не поддерживает отдельную ветку «старых коллекторов»; в `Gather()` участвуют только
+  структуры метрик и объекты с `Collect()`.
+
 ## [1.0.2] - 2026-03-17
 
 ### Исправлено
