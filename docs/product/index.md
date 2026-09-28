@@ -128,6 +128,19 @@ Prometheus.Наблюдать(Duration, ДлительностьВСекунда
 Подробно структура промежуточного формата описана в файле `docs/README.md`:
 там расписаны поля семейств, сэмплов, правила сортировки бакетов и квантилей.
 
+## Формат выдачи и заголовок Accept
+
+По умолчанию `СериализоватьВТекст` выдаёт Prometheus Text Format 0.0.4. При отдаче метрик по HTTP формат
+можно выбрать по заголовку `Accept` запроса: Prometheus Text Format 0.0.4 или 1.0.0, OpenMetrics 0.0.1 или 1.0.0.
+
+```bsl
+#Использовать prometheus
+
+Формат = Prometheus.ВыбратьФормат(ЗаголовокAccept);
+ТекстМетрик = Prometheus.СериализоватьВТекст(Prometheus.СобратьМетрики(), Формат);
+ТипКонтента = Prometheus.ContentTypeМетрик(Формат); // значение заголовка Content-Type ответа
+```
+
 ## Интеграция с prometheus-metrics и Autumn
 
 В большинстве случаев библиотека `prometheus` используется **совместно** с:
@@ -155,7 +168,8 @@ Prometheus.Наблюдать(Duration, ДлительностьВСекунда
 
 - [Полный API справочник](/api/prometheus/index.md)
 - [Модуль Prometheus](/api/prometheus/Модули/Prometheus.md) — фасадный модуль библиотеки
-- [Модуль PrometheusTextFormat](/api/prometheus/Модули/PrometheusTextFormat.md) — сериализация в Prometheus Text Format
+- [Модуль PrometheusTextFormat](/api/prometheus/Модули/PrometheusTextFormat.md) - сериализация в Prometheus Text Format
+  и OpenMetrics, выбор формата по заголовку `Accept`
 - [Класс CollectorRegistry](/api/prometheus/Классы/CollectorRegistry.md) — реестр коллекторов
 
 ### Интеграция
