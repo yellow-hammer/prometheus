@@ -5,7 +5,8 @@
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/yellow-hammer/prometheus)
 
 Библиотека сбора метрик Prometheus для OneScript: реестр коллекторов, типы метрик (Counter, Gauge, Histogram,
-Summary), Vec-варианты с лейблами и сериализация в [Prometheus Text Format](https://prometheus.io/docs/instrumenting/exposition_formats/).
+Summary), Vec-варианты с лейблами и сериализация в [Prometheus Text Format](https://prometheus.io/docs/instrumenting/exposition_formats/)
+и [OpenMetrics](https://prometheus.io/docs/specs/om/open_metrics_spec/) с выбором формата по заголовку `Accept`.
 **Без HTTP** — только логика накопления и сбора метрик. HTTP-сервис отдачи метрик (GET `/metrics`) реализован в
 [prometheus-metrics](https://github.com/yellow-hammer/prometheus-metrics) (Autumn, Winow).
 

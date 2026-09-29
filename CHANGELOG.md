@@ -5,6 +5,28 @@
 Формат основан на [Keep a Changelog](https://keepachangelog.com/ru/1.0.0/),
 и этот проект придерживается [Semantic Versioning](https://semver.org/lang/ru/).
 
+## [Unreleased]
+
+### Добавлено
+
+- Формат OpenMetrics 0.0.1 и 1.0.0: строки `# UNIT` и `# EOF`, сэмплы `_created`, exemplars, типы `info`,
+  `stateset` и `unknown`, каноническая запись `le` и `quantile` (`1.0`, `1e+06`).
+- Выбор формата выдачи по заголовку `Accept` (Prometheus Content Negotiation): `Prometheus.ВыбратьФормат`,
+  `PrometheusTextFormat.ВыбратьФормат` и `PrometheusTextFormat.ФорматПоУмолчанию`. Поддерживаются text format
+  0.0.4 и 1.0.0 и OpenMetrics 0.0.1 и 1.0.0.
+- Схемы экранирования имён `underscores`, `dots`, `values` и `allow-utf-8` (параметр `escaping` заголовка `Accept`).
+- `Prometheus.СериализоватьВТекст`, `Prometheus.ContentTypeМетрик`, `PrometheusTextFormat.Сериализовать` и
+  `PrometheusTextFormat.ContentType` принимают необязательный формат выдачи. Без него выдача прежняя: text format 0.0.4.
+- Поля промежуточного формата: `Единица` у семейства, `Экземпляр` и `Создано` у сэмпла. Они выводятся только
+  в OpenMetrics.
+
+### Изменено
+
+- В text format имена метрик и лейблов вне классического формата экранируются по схеме `underscores`: недопустимые
+  символы заменяются на `_`. Раньше такие имена выводились как есть, и Prometheus не мог разобрать выдачу.
+- В text format типы `info` и `stateset` выводятся как `gauge` (имя `info`-метрики с суффиксом `_info`), а `unknown`
+  как `untyped`. Раньше тип выводился как есть.
+
 ## [1.0.5] - 2026-09-28
 
 ### Исправлено
