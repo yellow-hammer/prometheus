@@ -190,6 +190,80 @@
 		"Типы в OpenMetrics");
 КонецПроцедуры
 
+// В OpenMetrics значения le и quantile выводятся в канонической записи, как %g в Go: целые с ".0",
+// очень малые и большие числа в экспоненциальной записи. В text format запись прежняя.
+&Тест
+Процедура ТестДолжен_OpenMetricsКаноническиеЧислаВLeИQuantile() Экспорт
+	Границы = Новый Массив;
+	Границы.Добавить(0.00001);
+	Границы.Добавить(0.5);
+	Границы.Добавить(1);
+	Границы.Добавить(1000000);
+	Гистограмма = PrometheusMetrics.НоваяГистограмма(
+		Новый Структура("Имя, ВерхниеГраницыБакетов", "size_bytes", Границы));
+	PrometheusMetrics.НаблюдатьГистограмму(Гистограмма, 2);
+	Квантили = Новый Массив;
+	Квантили.Добавить(0.5);
+	Квантили.Добавить(1);
+	Резюме = PrometheusMetrics.НовоеРезюме(Новый Структура("Имя, Квантили", "latency", Квантили));
+	PrometheusMetrics.НаблюдатьРезюме(Резюме, 3);
+	Реестр = Новый CollectorRegistry;
+	Реестр.Register(Гистограмма);
+	Реестр.Register(Резюме);
+	Семейства = Реестр.Gather();
+
+	ОткрытыеМетрики = PrometheusTextFormat.Сериализовать(Семейства, ФорматOpenMetrics());
+	Текст = PrometheusTextFormat.Сериализовать(Семейства);
+
+	Утверждения.ПроверитьРавенство(
+		"# TYPE latency summary" + Символы.ПС
+			+ "latency{quantile=""0.5""} 3" + Символы.ПС
+			+ "latency{quantile=""1.0""} 3" + Символы.ПС
+			+ "latency_sum 3" + Символы.ПС
+			+ "latency_count 1" + Символы.ПС
+			+ "# TYPE size_bytes histogram" + Символы.ПС
+			+ "size_bytes_bucket{le=""1e-05""} 0" + Символы.ПС
+			+ "size_bytes_bucket{le=""0.5""} 0" + Символы.ПС
+			+ "size_bytes_bucket{le=""1.0""} 0" + Символы.ПС
+			+ "size_bytes_bucket{le=""1e+06""} 1" + Символы.ПС
+			+ "size_bytes_bucket{le=""+Inf""} 1" + Символы.ПС
+			+ "size_bytes_sum 2" + Символы.ПС
+			+ "size_bytes_count 1" + Символы.ПС
+			+ "# EOF" + Символы.ПС,
+		ОткрытыеМетрики,
+		"Канонические le и quantile в OpenMetrics");
+	Утверждения.ПроверитьИстину(
+		СтрНайти(Текст, "size_bytes_bucket{le=""1""} 0") > 0 И СтрНайти(Текст, "latency{quantile=""1""} 3") > 0,
+		"В text format запись le и quantile не меняется: " + Текст);
+КонецПроцедуры
+
+// У info и stateset в OpenMetrics единица должна быть пустой: строка # UNIT не выводится, даже если
+// имя семейства оканчивается на единицу.
+&Тест
+Процедура ТестДолжен_OpenMetricsБезUnitУInfoИStateset() Экспорт
+	Семейства = Новый Массив;
+	Семейства.Добавить(Семейство(
+		"uptime_seconds", "info", "", МассивИзСэмпла(Сэмпл("uptime_seconds_info", 1)), "seconds"));
+	Семейства.Добавить(Семейство(
+		"mode_seconds", "stateset", "", МассивИзСэмпла(Сэмпл("mode_seconds", 1, "mode_seconds", "fast")), "seconds"));
+	Семейства.Добавить(Семейство(
+		"wait_seconds", "gauge", "", МассивИзСэмпла(Сэмпл("wait_seconds", 2)), "seconds"));
+
+	Текст = PrometheusTextFormat.Сериализовать(Семейства, ФорматOpenMetrics());
+
+	Утверждения.ПроверитьРавенство(
+		"# TYPE mode_seconds stateset" + Символы.ПС
+			+ "mode_seconds{mode_seconds=""fast""} 1" + Символы.ПС
+			+ "# TYPE uptime_seconds info" + Символы.ПС
+			+ "uptime_seconds_info 1" + Символы.ПС
+			+ "# TYPE wait_seconds gauge" + Символы.ПС
+			+ "# UNIT wait_seconds seconds" + Символы.ПС
+			+ "wait_seconds 2" + Символы.ПС
+			+ "# EOF" + Символы.ПС,
+		Текст,
+		"# UNIT выводится только у gauge");
+КонецПроцедуры
+
 &Тест
 Процедура ТестДолжен_ПустаяВыдачаOpenMetrics() Экспорт
 	Текст = PrometheusTextFormat.Сериализовать(Новый Массив, ФорматOpenMetrics());

@@ -10,7 +10,7 @@
 ### Добавлено
 
 - Формат OpenMetrics 0.0.1 и 1.0.0: строки `# UNIT` и `# EOF`, сэмплы `_created`, exemplars, типы `info`,
-  `stateset` и `unknown`.
+  `stateset` и `unknown`, каноническая запись `le` и `quantile` (`1.0`, `1e+06`).
 - Выбор формата выдачи по заголовку `Accept` (Prometheus Content Negotiation): `Prometheus.ВыбратьФормат`,
   `PrometheusTextFormat.ВыбратьФормат` и `PrometheusTextFormat.ФорматПоУмолчанию`. Поддерживаются text format
   0.0.4 и 1.0.0 и OpenMetrics 0.0.1 и 1.0.0.
